@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>استمارة متابعة الإنجاز العلمي الشهري للمقررات الدراسية</title>
+  <style>
+    :root {
+      --primary: #006874;
+      --primary-hover: #004f58;
+      --primary-light: #e0f4f7;
+      --border: #d5d8dc;
+      --danger: #c0392b;
+      --success: #1e8449;
+      --bg: #f4f7f8;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      color: #2c3e50;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 20px 20px 0 20px;
+      line-height: 1.6;
+    }
+    .main-wrapper {
+      width: 100%;
+      max-width: 760px;
+      margin: 0 auto 30px auto;
+      flex: 1 0 auto;
+    }
+    .container {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+      overflow: hidden;
+      border-top: 8px solid var(--primary);
+    }
+    .top-nav {
+      background: #eef5f6;
+      padding: 10px 32px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+    }
+    .top-nav a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .top-nav a:hover {
+      text-decoration: underline;
+    }
+    /* الهيدر الرسمي مع شعار الجامعة */
+    .header {
+      padding: 24px 32px;
+      border-bottom: 1px solid var(--border);
+      background-color: #fafcfd;
+    }
+    .header-branding {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 18px;
+      padding-bottom: 16px;
+      border-bottom: 1px dashed #d5d8dc;
+    }
+    .uni-logo {
+      width: 95px;
+      height: 95px;
+      object-fit: contain;
+      border-radius: 50%;
+      flex-shrink: 0;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.14);
+    }
+    .header-titles {
+      flex: 1;
+    }
+    .header-titles .uni-meta {
+      font-size: 13.5px;
+      font-weight: bold;
+      color: #566573;
+      margin: 0 0 6px 0;
+    }
+    .header-titles h1 {
+      margin: 0;
+      font-size: 21px;
+      color: var(--primary);
+    }
+    .header p {
+      margin: 0 0 10px 0;
+      font-size: 14.5px;
+      color: #4d5656;
+      text-align: justify;
+    }
+    .required-note {
+      color: var(--danger);
+      font-size: 13px;
+      font-weight: bold;
+      margin-top: 12px;
+    }
+    .form-body {
+      padding: 28px 32px;
+    }
+    .form-group {
+      margin-bottom: 22px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid #f0f3f4;
+    }
+    .form-group:last-of-type {
+      border-bottom: none;
+    }
+    label.question-title {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 10px;
+      font-size: 15.5px;
+    }
+    .req {
+      color: var(--danger);
+      margin-right: 4px;
+    }
+    select, input[type="number"], input[type="text"] {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 15px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      background-color: #fff;
+    }
+    select:focus, input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(0, 104, 116, 0.12);
+    }
+    select:disabled, input[readonly] {
+      background-color: #eef2f3;
+      cursor: not-allowed;
+      color: #566573;
+    }
+    .radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .radio-group.horizontal {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+    .radio-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-size: 15px;
+    }
+    .radio-option input[type="radio"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+    @media (max-width: 600px) {
+      .grid-2 { grid-template-columns: 1fr; }
+      .header, .form-body, .top-nav { padding: 18px 20px; }
+      .header-branding { flex-direction: column; text-align: center; }
+    }
+    .loading-banner {
+      background: var(--primary-light);
+      color: var(--primary);
+      padding: 12px 15px;
+      border-radius: 6px;
+      margin-bottom: 22px;
+      font-size: 14px;
+      font-weight: bold;
+      text-align: center;
+    }
+    .autofill-notice {
+      background: #eafaf1;
+      color: var(--success);
+      border: 1px solid #a9dfbf;
+      padding: 10px 14px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      font-size: 13.5px;
+      display: none;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .hint {
+      font-size: 12.5px;
+      color: #7f8c8d;
+      margin-top: 5px;
+    }
+    button[type="submit"] {
+      width: 100%;
+      padding: 14px;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.25s;
+    }
+    button[type="submit"]:hover {
+      background-color: var(--primary-hover);
+    }
+    button[type="submit"]:disabled {
+      background-color: #95a5a6;
+      cursor: wait;
+    }
+    .status-box {
+      margin-top: 18px;
+      padding: 14px;
+      border-radius: 6px;
+      text-align: center;
+      font-weight: bold;
+      display: none;
+    }
+    .status-success { background: #d4efdf; color: var(--success); border: 1px solid #a9dfbf; }
+    .status-error { background: #fadbd8; color: var(--danger); border: 1px solid #f5b7b1; }
+
+    /* الفوتر الثابت في أسفل الصفحة عبر Flexbox و margin-top: auto دون تغطية المحتوى */
+    .dev-footer {
+      width: 100%;
+      max-width: 760px;
+      margin: auto auto 0 auto;
+      padding: 18px 20px;
+      text-align: center;
+      font-size: 14px;
+      color: #566573;
+      border-top: 1px solid #dce3e6;
+      flex-shrink: 0;
+    }
+    .dev-trigger {
+      color: var(--primary);
+      font-weight: bold;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      background-color: var(--primary-light);
+      transition: all 0.25s ease;
+      user-select: none;
+    }
+    .dev-trigger:hover {
+      background-color: var(--primary);
+      color: #fff;
+    }
+    .dev-trigger .arrow {
+      font-size: 11px;
+      transition: transform 0.25s ease;
+    }
+    .dev-trigger.active .arrow {
+      transform: rotate(180deg);
+    }
+    .dev-details {
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height 0.3s ease, opacity 0.3s ease, margin-top 0.3s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .dev-details.open {
+      max-height: 120px;
+      opacity: 1;
+      margin-top: 12px;
+    }
+    .dev-contact-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #fff;
+      border: 1px solid var(--border);
+      padding: 6px 14px;
+      border-radius: 8px;
+      color: #2c3e50;
+      text-decoration: none;
+      font-size: 13.5px;
+      font-weight: 500;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+      transition: border-color 0.2s, color 0.2s, transform 0.2s;
+      direction: ltr;
+    }
+    .dev-contact-chip:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body>
+
+<div class="main-wrapper">
+  <div class="container">
+    <div class="top-nav">
+      <a href="index.html">→ العودة إلى الصفحة الرئيسية للاستمارات</a>
+      <span style="color: #566573;">قسم تقنيات التخدير</span>
+    </div>
+
+    <!-- الهيدر الرسمي مع شعار الجامعة -->
+    <header class="header">
+      <div class="header-branding">
+        <img src="logo.png" alt="شعار الجامعة الإسلامية - كلية التقنيات الطبية" class="uni-logo">
+        <div class="header-titles">
+          <div class="uni-meta">الجامعة الإسلامية / كلية التقنيات الطبية — قسم تقنيات التخدير</div>
+          <h1>استمارة متابعة الإنجاز العلمي الشهري للمقررات الدراسية</h1>
+        </div>
+      </div>
+      <p>تهدف هذه الاستمارة إلى متابعة مستوى الإنجاز الأكاديمي للمقررات الدراسية في قسم تقنيات التخدير، من خلال رصد عدد المحاضرات المخططة والمنفذة فعلياً، ومتابعة الكوزات والاختبارات القصيرة، وقياس نسب حضور الطلبة، فضلاً عن متابعة نسبة إنجاز مفردات المنهج الدراسي وفق الخطة العلمية والزمنية المعتمدة.</p>
+      <p>تأتي هذه الاستمارة ضمن إجراءات متابعة الأداء التدريسي وضمان جودة العملية التعليمية، والتحقق من مدى الالتزام بتنفيذ المناهج الدراسية المقررة، وتشخيص المعوقات التي قد تؤثر في سير العملية التعليمية، بما يسهم في تحسين مستوى الأداء الأكاديمي وتحقيق متطلبات ضمان الجودة والاعتماد الأكاديمي.</p>
+      <div class="required-note">* تشير إلى أنّ السؤال مطلوب</div>
+    </header>
+
+    <div class="form-body">
+      <div id="loadingBanner" class="loading-banner">جاري تحميل قائمة التدريسيين والمواد من قاعدة البيانات...</div>
+      <div id="autofillNotice" class="autofill-notice">
+        <span>✓ تم استرجاع اسمك وصفتك الوظيفية تلقائياً من بياناتك المحفوظة في المتصفح.</span>
+      </div>
+
+      <form id="academicForm">
+        
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="question-title" for="roleSelect">الصفة الوظيفية للتدريسي <span class="req">*</span></label>
+            <select id="roleSelect" required disabled>
+              <option value="">-- اختر الصفة الوظيفية --</option>
+              <option value="ملاك">ملاك</option>
+              <option value="محاضر">محاضر</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="question-title" for="teacherSelect">اسم التدريسي <span class="req">*</span></label>
+            <select id="teacherSelect" required disabled>
+              <option value="">-- اختر الصفة الوظيفية أولاً --</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="question-title">المرحلة الدراسية <span class="req">*</span></label>
+          <div class="radio-group horizontal" id="stageGroup">
+            <label class="radio-option"><input type="radio" name="stage" value="الأول" required> الأول</label>
+            <label class="radio-option"><input type="radio" name="stage" value="الثاني"> الثاني</label>
+            <label class="radio-option"><input type="radio" name="stage" value="الثالث"> الثالث</label>
+            <label class="radio-option"><input type="radio" name="stage" value="الرابع"> الرابع</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="question-title" for="subjectSelect">المادة <span class="req">*</span></label>
+          <select id="subjectSelect" required disabled>
+            <option value="">-- اختر المرحلة الدراسية أولاً --</option>
+          </select>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="question-title" for="plannedLectures">عدد المحاضرات المخطط لها حسب الجدول <span class="req">*</span></label>
+            <input type="number" id="plannedLectures" min="0" required>
+          </div>
+
+          <div class="form-group">
+            <label class="question-title" for="actualLectures">عدد المحاضرات الفعلية المنفذة <span class="req">*</span></label>
+            <input type="number" id="actualLectures" min="0" required>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="question-title" for="postponedLectures">عدد المحاضرات المؤجلة أو غير المنفذة <span class="req">*</span></label>
+            <input type="number" id="postponedLectures" min="0" required>
+            <div class="hint">يُحسب تلقائياً (المخططة - المنفذة) ويمكنك تعديله يدوياً</div>
+          </div>
+
+          <div class="form-group">
+            <label class="question-title" for="actualHours">عدد ساعات التدريس الفعلية <span class="req">*</span></label>
+            <input type="number" id="actualHours" min="0" step="0.5" required>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="question-title" for="plannedQuizzes">عدد الكوزات المخطط إجراؤها خلال الفترة <span class="req">*</span></label>
+            <input type="number" id="plannedQuizzes" min="0" required>
+          </div>
+
+          <div class="form-group">
+            <label class="question-title" for="actualQuizzes">عدد الكوزات المنفذة فعلياً <span class="req">*</span></label>
+            <input type="number" id="actualQuizzes" min="0" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="question-title">هل تم تصحيح الكوزات وإعلان النتائج؟ <span class="req">*</span></label>
+          <div class="radio-group horizontal">
+            <label class="radio-option"><input type="radio" name="quizzesGraded" value="نعم" required> نعم</label>
+            <label class="radio-option"><input type="radio" name="quizzesGraded" value="لا"> لا</label>
+            <label class="radio-option"><input type="radio" name="quizzesGraded" value="جزئياً"> جزئياً</label>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="question-title" for="avgAttendance">متوسط عدد الطلبة الحاضرين في المحاضرة <span class="req">*</span></label>
+            <input type="number" id="avgAttendance" min="0" required>
+          </div>
+
+          <div class="form-group">
+            <label class="question-title" for="completedTopics">عدد المفردات (حسب خطة المنهج) المنجزة فعلياً <span class="req">*</span></label>
+            <input type="number" id="completedTopics" min="0" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="question-title" for="completionPercentage">نسبة إنجاز المنهج (%) <span class="req">*</span></label>
+          <input type="number" id="completionPercentage" min="0" max="100" step="0.1" placeholder="مثال: 75" required>
+        </div>
+
+        <div class="form-group">
+          <label class="question-title">هل الإنجاز متوافق مع الخطة الزمنية؟ <span class="req">*</span></label>
+          <div class="radio-group horizontal">
+            <label class="radio-option"><input type="radio" name="onSchedule" value="نعم" required> نعم</label>
+            <label class="radio-option"><input type="radio" name="onSchedule" value="لا"> لا</label>
+            <label class="radio-option"><input type="radio" name="onSchedule" value="متأخر"> متأخر</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="question-title">أتعهد بصحة المعلومات المقدمة مع توفر جميع الإثباتات عند المطالبة <span class="req">*</span></label>
+          <div class="radio-group">
+            <label class="radio-option"><input type="radio" name="pledge" value="نعم" required> نعم، أتعهد بذلك</label>
+          </div>
+        </div>
+
+        <button type="submit" id="submitBtn" disabled>إرسال الاستمارة</button>
+        <div id="statusBox" class="status-box"></div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- فوتر حقوق البرمجة والتطوير (دائماً في الأسفل بـ margin-top: auto) -->
+<footer class="dev-footer">
+  <div>
+    تمت البرمجة والتطوير بواسطة:
+    <span class="dev-trigger" onclick="toggleDevDetails(this)" title="اضغط لعرض معلومات التواصل">
+      مرتضى حسين حسن
+      <span class="arrow">▼</span>
+    </span>
+  </div>
+  <div id="devDetails" class="dev-details">
+    <a href="mailto:murtadhaaltufaily@gmail.com" class="dev-contact-chip">
+      <span>✉️</span>
+      <span>murtadhaaltufaily@gmail.com</span>
+    </a>
+    <a href="tel:07864566840" class="dev-contact-chip">
+      <span>📞</span>
+      <span>07864566840</span>
+    </a>
+  </div>
+</footer>
+
+<script>
+  function toggleDevDetails(el) {
+    el.classList.toggle("active");
+    const details = document.getElementById("devDetails");
+    details.classList.toggle("open");
+  }
+
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwD9fSOm1UIV59sTUAmzu0DxPVsk6prvd5qW-oqDX8tcxtGsxWAg1UwDG8iJ9ZVcoRaEw/exec";
+  const STORAGE_KEY = "anesthesia_dept_teacher_profile";
+
+  let sheetData = { teachers: {}, subjects: {} };
+
+  const roleSelect = document.getElementById("roleSelect");
+  const teacherSelect = document.getElementById("teacherSelect");
+  const subjectSelect = document.getElementById("subjectSelect");
+  const loadingBanner = document.getElementById("loadingBanner");
+  const autofillNotice = document.getElementById("autofillNotice");
+  const submitBtn = document.getElementById("submitBtn");
+  const statusBox = document.getElementById("statusBox");
+  const form = document.getElementById("academicForm");
+
+  const plannedInput = document.getElementById("plannedLectures");
+  const actualInput = document.getElementById("actualLectures");
+  const postponedInput = document.getElementById("postponedLectures");
+
+  function getSavedProfile() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || null;
+    } catch {
+      return null;
+    }
+  }
+
+  function saveTeacherProfile(role, teacher) {
+    if (role && teacher) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ role, teacher }));
+    }
+  }
+
+  function populateTeachers(role, preselectedTeacher = "") {
+    teacherSelect.innerHTML = '<option value="">-- اختر اسم التدريسي --</option>';
+    if (role && sheetData.teachers[role]) {
+      teacherSelect.disabled = false;
+      sheetData.teachers[role].forEach(name => {
+        const opt = document.createElement("option");
+        opt.value = name;
+        opt.textContent = name;
+        if (name === preselectedTeacher) opt.selected = true;
+        teacherSelect.appendChild(opt);
+      });
+    } else {
+      teacherSelect.disabled = true;
+      teacherSelect.innerHTML = '<option value="">-- اختر الصفة الوظيفية أولاً --</option>';
+    }
+  }
+
+  function autoCalcPostponed() {
+    const p = parseFloat(plannedInput.value);
+    const a = parseFloat(actualInput.value);
+    if (!isNaN(p) && !isNaN(a)) {
+      postponedInput.value = Math.max(0, p - a);
+    }
+  }
+  plannedInput.addEventListener("input", autoCalcPostponed);
+  actualInput.addEventListener("input", autoCalcPostponed);
+
+  window.addEventListener("DOMContentLoaded", () => {
+    fetch(SCRIPT_URL)
+      .then(res => res.json())
+      .then(data => {
+        sheetData = data;
+        loadingBanner.style.display = "none";
+        roleSelect.disabled = false;
+        submitBtn.disabled = false;
+
+        const saved = getSavedProfile();
+        if (saved && saved.role && sheetData.teachers[saved.role]) {
+          roleSelect.value = saved.role;
+          populateTeachers(saved.role, saved.teacher || "");
+          if (saved.teacher) {
+            autofillNotice.style.display = "flex";
+          }
+        }
+      })
+      .catch(() => {
+        loadingBanner.textContent = "تعذر الاتصال بقاعدة البيانات. تأكد من الاتصال بالإنترنت وصلاحيات النشر.";
+        loadingBanner.style.background = "#fadbd8";
+        loadingBanner.style.color = "#c0392b";
+      });
+  });
+
+  roleSelect.addEventListener("change", function() {
+    populateTeachers(this.value);
+    saveTeacherProfile(this.value, "");
+  });
+
+  teacherSelect.addEventListener("change", function() {
+    saveTeacherProfile(roleSelect.value, this.value);
+  });
+
+  document.querySelectorAll('input[name="stage"]').forEach(radio => {
+    radio.addEventListener("change", function() {
+      const stage = this.value;
+      subjectSelect.innerHTML = '<option value="">-- اختر المادة الدراسية --</option>';
+
+      if (stage && sheetData.subjects[stage] && sheetData.subjects[stage].length > 0) {
+        subjectSelect.disabled = false;
+        sheetData.subjects[stage].forEach(sub => {
+          const opt = document.createElement("option");
+          opt.value = sub;
+          opt.textContent = sub;
+          subjectSelect.appendChild(opt);
+        });
+      } else {
+        subjectSelect.disabled = true;
+        subjectSelect.innerHTML = '<option value="">-- لا توجد مواد مسجلة لهذه المرحلة --</option>';
+      }
+    });
+  });
+
+  form.addEventListener("submit", function(e) {
+    e.preventDefault();
+    submitBtn.disabled = true;
+    submitBtn.textContent = "جاري إرسال الاستمارة...";
+    statusBox.style.display = "none";
+
+    const currentRole = roleSelect.value;
+    const currentTeacher = teacherSelect.value;
+
+    saveTeacherProfile(currentRole, currentTeacher);
+
+    const payload = {
+      role: currentRole,
+      teacher: currentTeacher,
+      stage: document.querySelector('input[name="stage"]:checked').value,
+      subject: subjectSelect.value,
+      plannedLectures: plannedInput.value,
+      actualLectures: actualInput.value,
+      postponedLectures: postponedInput.value,
+      actualHours: document.getElementById("actualHours").value,
+      plannedQuizzes: document.getElementById("plannedQuizzes").value,
+      actualQuizzes: document.getElementById("actualQuizzes").value,
+      quizzesGraded: document.querySelector('input[name="quizzesGraded"]:checked').value,
+      avgAttendance: document.getElementById("avgAttendance").value,
+      completedTopics: document.getElementById("completedTopics").value,
+      completionPercentage: document.getElementById("completionPercentage").value,
+      onSchedule: document.querySelector('input[name="onSchedule"]:checked').value,
+      pledge: document.querySelector('input[name="pledge"]:checked').value
+    };
+
+    fetch(SCRIPT_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    })
+    .then(() => {
+      statusBox.textContent = "تم استلام الاستمارة بنجاح وحفظها في سجل القسم. تم الاحتفاظ باسمك لتعبئة مادة أخرى بسهولة.";
+      statusBox.className = "status-box status-success";
+      statusBox.style.display = "block";
+      
+      form.reset();
+      roleSelect.value = currentRole;
+      populateTeachers(currentRole, currentTeacher);
+      autofillNotice.style.display = "flex";
+      subjectSelect.disabled = true;
+      subjectSelect.innerHTML = '<option value="">-- اختر المرحلة الدراسية أولاً --</option>';
+    })
+    .catch(() => {
+      statusBox.textContent = "حدث خطأ أثناء الإرسال، يرجى المحاولة مرة أخرى.";
+      statusBox.className = "status-box status-error";
+      statusBox.style.display = "block";
+    })
+    .finally(() => {
+      submitBtn.disabled = false;
+      submitBtn.textContent = "إرسال الاستمارة";
+    });
+  });
+</script>
+
+</body>
+</html>
