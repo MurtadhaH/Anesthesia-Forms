@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>استمارة متابعة الإنجاز العلمي الشهري للمقررات الدراسية</title>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
     :root {
       --primary: #006874;
@@ -14,13 +15,8 @@
       --success: #1e8449;
       --bg: #f4f7f8;
     }
-    * {
-      box-sizing: border-box;
-    }
-    html, body {
-      height: 100%;
-      margin: 0;
-    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; }
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: var(--bg);
@@ -53,15 +49,8 @@
       align-items: center;
       font-size: 14px;
     }
-    .top-nav a {
-      color: var(--primary);
-      text-decoration: none;
-      font-weight: bold;
-    }
-    .top-nav a:hover {
-      text-decoration: underline;
-    }
-    /* الهيدر الرسمي مع شعار الجامعة */
+    .top-nav a { color: var(--primary); text-decoration: none; font-weight: bold; }
+    .top-nav a:hover { text-decoration: underline; }
     .header {
       padding: 24px 32px;
       border-bottom: 1px solid var(--border);
@@ -83,53 +72,63 @@
       flex-shrink: 0;
       box-shadow: 0 3px 10px rgba(0,0,0,0.14);
     }
-    .header-titles {
-      flex: 1;
+    .header-titles { flex: 1; }
+    .header-titles .uni-meta { font-size: 13.5px; font-weight: bold; color: #566573; margin: 0 0 6px 0; }
+    .header-titles h1 { margin: 0; font-size: 21px; color: var(--primary); }
+    .header p { margin: 0 0 10px 0; font-size: 14.5px; color: #4d5656; text-align: justify; }
+    .required-note { color: var(--danger); font-size: 13px; font-weight: bold; margin-top: 12px; }
+
+    /* شريط البريد الإلكتروني (مشابه لـ Google Forms) */
+    .google-account-bar {
+      background: #f8f9fa;
+      border-bottom: 1px solid var(--border);
+      padding: 14px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
     }
-    .header-titles .uni-meta {
-      font-size: 13.5px;
-      font-weight: bold;
-      color: #566573;
-      margin: 0 0 6px 0;
+    .google-user-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
-    .header-titles h1 {
-      margin: 0;
-      font-size: 21px;
-      color: var(--primary);
+    .google-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: none;
     }
-    .header p {
-      margin: 0 0 10px 0;
-      font-size: 14.5px;
-      color: #4d5656;
-      text-align: justify;
-    }
-    .required-note {
-      color: var(--danger);
+    .google-email-text { font-weight: bold; font-size: 14.5px; color: #2c3e50; }
+    .google-status-text { font-size: 12.5px; color: #566573; }
+    .switch-account-btn {
+      background: none;
+      border: 1px solid #d5d8dc;
+      color: #1a73e8;
+      padding: 5px 12px;
+      border-radius: 6px;
       font-size: 13px;
       font-weight: bold;
-      margin-top: 12px;
+      cursor: pointer;
+      display: none;
     }
-    .form-body {
-      padding: 28px 32px;
+    .switch-account-btn:hover { background: #e8f0fe; }
+
+    .auth-gate {
+      padding: 40px 30px;
+      text-align: center;
+      background: #fff;
     }
-    .form-group {
-      margin-bottom: 22px;
-      padding-bottom: 18px;
-      border-bottom: 1px solid #f0f3f4;
-    }
-    .form-group:last-of-type {
-      border-bottom: none;
-    }
-    label.question-title {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 10px;
-      font-size: 15.5px;
-    }
-    .req {
-      color: var(--danger);
-      margin-right: 4px;
-    }
+    .auth-gate h2 { color: var(--primary); margin-top: 0; font-size: 19px; }
+    .auth-gate p { color: #566573; font-size: 14.5px; margin-bottom: 22px; }
+    .google-btn-center { display: flex; justify-content: center; }
+
+    .form-body { padding: 28px 32px; display: none; }
+    .form-group { margin-bottom: 22px; padding-bottom: 18px; border-bottom: 1px solid #f0f3f4; }
+    .form-group:last-of-type { border-bottom: none; }
+    label.question-title { display: block; font-weight: bold; margin-bottom: 10px; font-size: 15.5px; }
+    .req { color: var(--danger); margin-right: 4px; }
     select, input[type="number"], input[type="text"] {
       width: 100%;
       padding: 11px 12px;
@@ -144,42 +143,15 @@
       border-color: var(--primary);
       box-shadow: 0 0 0 3px rgba(0, 104, 116, 0.12);
     }
-    select:disabled, input[readonly] {
-      background-color: #eef2f3;
-      cursor: not-allowed;
-      color: #566573;
-    }
-    .radio-group {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .radio-group.horizontal {
-      flex-direction: row;
-      flex-wrap: wrap;
-      gap: 24px;
-    }
-    .radio-option {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-      font-size: 15px;
-    }
-    .radio-option input[type="radio"] {
-      width: 18px;
-      height: 18px;
-      accent-color: var(--primary);
-      cursor: pointer;
-    }
-    .grid-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 18px;
-    }
+    select:disabled, input[readonly] { background-color: #eef2f3; cursor: not-allowed; color: #566573; }
+    .radio-group { display: flex; flex-direction: column; gap: 10px; }
+    .radio-group.horizontal { flex-direction: row; flex-wrap: wrap; gap: 24px; }
+    .radio-option { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 15px; }
+    .radio-option input[type="radio"] { width: 18px; height: 18px; accent-color: var(--primary); cursor: pointer; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
     @media (max-width: 600px) {
       .grid-2 { grid-template-columns: 1fr; }
-      .header, .form-body, .top-nav { padding: 18px 20px; }
+      .header, .form-body, .top-nav, .google-account-bar { padding: 18px 20px; }
       .header-branding { flex-direction: column; text-align: center; }
     }
     .loading-banner {
@@ -204,11 +176,7 @@
       justify-content: space-between;
       align-items: center;
     }
-    .hint {
-      font-size: 12.5px;
-      color: #7f8c8d;
-      margin-top: 5px;
-    }
+    .hint { font-size: 12.5px; color: #7f8c8d; margin-top: 5px; }
     button[type="submit"] {
       width: 100%;
       padding: 14px;
@@ -221,25 +189,12 @@
       cursor: pointer;
       transition: background 0.25s;
     }
-    button[type="submit"]:hover {
-      background-color: var(--primary-hover);
-    }
-    button[type="submit"]:disabled {
-      background-color: #95a5a6;
-      cursor: wait;
-    }
-    .status-box {
-      margin-top: 18px;
-      padding: 14px;
-      border-radius: 6px;
-      text-align: center;
-      font-weight: bold;
-      display: none;
-    }
+    button[type="submit"]:hover { background-color: var(--primary-hover); }
+    button[type="submit"]:disabled { background-color: #95a5a6; cursor: wait; }
+    .status-box { margin-top: 18px; padding: 14px; border-radius: 6px; text-align: center; font-weight: bold; display: none; }
     .status-success { background: #d4efdf; color: var(--success); border: 1px solid #a9dfbf; }
     .status-error { background: #fadbd8; color: var(--danger); border: 1px solid #f5b7b1; }
 
-    /* الفوتر الثابت في أسفل الصفحة عبر Flexbox و margin-top: auto دون تغطية المحتوى */
     .dev-footer {
       width: 100%;
       max-width: 760px;
@@ -264,17 +219,9 @@
       transition: all 0.25s ease;
       user-select: none;
     }
-    .dev-trigger:hover {
-      background-color: var(--primary);
-      color: #fff;
-    }
-    .dev-trigger .arrow {
-      font-size: 11px;
-      transition: transform 0.25s ease;
-    }
-    .dev-trigger.active .arrow {
-      transform: rotate(180deg);
-    }
+    .dev-trigger:hover { background-color: var(--primary); color: #fff; }
+    .dev-trigger .arrow { font-size: 11px; transition: transform 0.25s ease; }
+    .dev-trigger.active .arrow { transform: rotate(180deg); }
     .dev-details {
       max-height: 0;
       overflow: hidden;
@@ -286,11 +233,7 @@
       flex-wrap: wrap;
       gap: 12px;
     }
-    .dev-details.open {
-      max-height: 120px;
-      opacity: 1;
-      margin-top: 12px;
-    }
+    .dev-details.open { max-height: 120px; opacity: 1; margin-top: 12px; }
     .dev-contact-chip {
       display: inline-flex;
       align-items: center;
@@ -307,11 +250,7 @@
       transition: border-color 0.2s, color 0.2s, transform 0.2s;
       direction: ltr;
     }
-    .dev-contact-chip:hover {
-      border-color: var(--primary);
-      color: var(--primary);
-      transform: translateY(-1px);
-    }
+    .dev-contact-chip:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-1px); }
   </style>
 </head>
 <body>
@@ -323,7 +262,6 @@
       <span style="color: #566573;">قسم تقنيات التخدير</span>
     </div>
 
-    <!-- الهيدر الرسمي مع شعار الجامعة -->
     <header class="header">
       <div class="header-branding">
         <img src="logo.png" alt="شعار الجامعة الإسلامية - كلية التقنيات الطبية" class="uni-logo">
@@ -337,7 +275,27 @@
       <div class="required-note">* تشير إلى أنّ السؤال مطلوب</div>
     </header>
 
-    <div class="form-body">
+    <!-- شريط توثيق البريد الإلكتروني (مشابه لـ Google Forms) -->
+    <div class="google-account-bar">
+      <div class="google-user-box">
+        <img id="userAvatar" class="google-avatar" src="" alt="صورة المستخدم">
+        <div>
+          <div id="userEmailDisplay" class="google-email-text">غير مسجل الدخول</div>
+          <div id="userStatusDisplay" class="google-status-text">سيتم تسجيل البريد الإلكتروني المرتبط بحسابك عند الإرسال</div>
+        </div>
+      </div>
+      <button type="button" id="switchAccountBtn" class="switch-account-btn" onclick="signOutGoogle()">تبديل الحساب</button>
+    </div>
+
+    <!-- بوابة تسجيل الدخول قبل عرض الاستمارة -->
+    <div id="authGate" class="auth-gate">
+      <h2>يرجى تسجيل الدخول بحساب Google للمتابعة</h2>
+      <p>لضمان موثوقية الاستمارة وتسجيل بريدك الإلكتروني تلقائياً، يرجى تسجيل الدخول بحسابك في Google.</p>
+      <div id="googleBtnGate" class="google-btn-center"></div>
+    </div>
+
+    <!-- جسم الاستمارة (يظهر بعد تسجيل الدخول) -->
+    <div id="formBody" class="form-body">
       <div id="loadingBanner" class="loading-banner">جاري تحميل قائمة التدريسيين والمواد من قاعدة البيانات...</div>
       <div id="autofillNotice" class="autofill-notice">
         <span>✓ تم استرجاع اسمك وصفتك الوظيفية تلقائياً من بياناتك المحفوظة في المتصفح.</span>
@@ -363,21 +321,41 @@
           </div>
         </div>
 
-        <div class="form-group">
-          <label class="question-title">المرحلة الدراسية <span class="req">*</span></label>
-          <div class="radio-group horizontal" id="stageGroup">
-            <label class="radio-option"><input type="radio" name="stage" value="الأول" required> الأول</label>
-            <label class="radio-option"><input type="radio" name="stage" value="الثاني"> الثاني</label>
-            <label class="radio-option"><input type="radio" name="stage" value="الثالث"> الثالث</label>
-            <label class="radio-option"><input type="radio" name="stage" value="الرابع"> الرابع</label>
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="question-title">المرحلة الدراسية <span class="req">*</span></label>
+            <div class="radio-group horizontal" id="stageGroup">
+              <label class="radio-option"><input type="radio" name="stage" value="الأول" required> الأول</label>
+              <label class="radio-option"><input type="radio" name="stage" value="الثاني"> الثاني</label>
+              <label class="radio-option"><input type="radio" name="stage" value="الثالث"> الثالث</label>
+              <label class="radio-option"><input type="radio" name="stage" value="الرابع"> الرابع</label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="question-title">نوع الدراسة <span class="req">*</span></label>
+            <div class="radio-group horizontal">
+              <label class="radio-option"><input type="radio" name="studyType" value="صباحي" required> صباحي</label>
+              <label class="radio-option"><input type="radio" name="studyType" value="مسائي"> مسائي</label>
+            </div>
           </div>
         </div>
 
-        <div class="form-group">
-          <label class="question-title" for="subjectSelect">المادة <span class="req">*</span></label>
-          <select id="subjectSelect" required disabled>
-            <option value="">-- اختر المرحلة الدراسية أولاً --</option>
-          </select>
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="question-title" for="subjectSelect">المادة <span class="req">*</span></label>
+            <select id="subjectSelect" required disabled>
+              <option value="">-- اختر المرحلة الدراسية أولاً --</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="question-title">نوع المادة <span class="req">*</span></label>
+            <div class="radio-group horizontal" style="padding-top: 8px;">
+              <label class="radio-option"><input type="radio" name="subjectType" value="نظري" required> نظري</label>
+              <label class="radio-option"><input type="radio" name="subjectType" value="عملي"> عملي</label>
+            </div>
+          </div>
         </div>
 
         <div class="grid-2">
@@ -466,7 +444,6 @@
   </div>
 </div>
 
-<!-- فوتر حقوق البرمجة والتطوير (دائماً في الأسفل بـ margin-top: auto) -->
 <footer class="dev-footer">
   <div>
     تمت البرمجة والتطوير بواسطة:
@@ -476,26 +453,113 @@
     </span>
   </div>
   <div id="devDetails" class="dev-details">
-    <a href="mailto:murtadhaaltufaily@gmail.com" class="dev-contact-chip">
-      <span>✉️</span>
-      <span>murtadhaaltufaily@gmail.com</span>
-    </a>
-    <a href="tel:07864566840" class="dev-contact-chip">
-      <span>📞</span>
-      <span>07864566840</span>
-    </a>
+    <a href="mailto:murtadhaaltufaily@gmail.com" class="dev-contact-chip"><span>✉️</span><span>murtadhaaltufaily@gmail.com</span></a>
+    <a href="tel:07864566840" class="dev-contact-chip"><span>📞</span><span>07864566840</span></a>
   </div>
 </footer>
 
 <script>
+  // رابط Web App URL الخاص بك:
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwD9fSOm1UIV59sTUAmzu0DxPVsk6prvd5qW-oqDX8tcxtGsxWAg1UwDG8iJ9ZVcoRaEw/exec";
+  // ضع معرف عميل جوجل (Google OAuth Client ID) هنا:
+  const GOOGLE_CLIENT_ID = "670756327247-q4l02e628qmqmvlpupccdhnlpcludarj.apps.googleusercontent.com";
+
+  const STORAGE_KEY = "anesthesia_dept_teacher_profile";
+  const AUTH_STORAGE_KEY = "anesthesia_dept_google_auth";
+
   function toggleDevDetails(el) {
     el.classList.toggle("active");
-    const details = document.getElementById("devDetails");
-    details.classList.toggle("open");
+    document.getElementById("devDetails").classList.toggle("open");
   }
 
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwD9fSOm1UIV59sTUAmzu0DxPVsk6prvd5qW-oqDX8tcxtGsxWAg1UwDG8iJ9ZVcoRaEw/exec";
-  const STORAGE_KEY = "anesthesia_dept_teacher_profile";
+  function parseJwt(token) {
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+      return JSON.parse(jsonPayload);
+    } catch { return null; }
+  }
+
+  function getValidAuth() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(AUTH_STORAGE_KEY) || "null");
+      if (saved && saved.token && saved.exp * 1000 > Date.now()) {
+        return saved;
+      }
+      localStorage.removeItem(AUTH_STORAGE_KEY);
+      return null;
+    } catch { return null; }
+  }
+
+  function updateAuthUI() {
+    const auth = getValidAuth();
+    const emailEl = document.getElementById("userEmailDisplay");
+    const statusEl = document.getElementById("userStatusDisplay");
+    const avatarEl = document.getElementById("userAvatar");
+    const switchBtn = document.getElementById("switchAccountBtn");
+    const authGate = document.getElementById("authGate");
+    const formBody = document.getElementById("formBody");
+
+    if (auth) {
+      emailEl.textContent = auth.email;
+      statusEl.textContent = "✓ تم التحقق — سيتم حفظ هذا البريد مع الاستمارة";
+      statusEl.style.color = "#1e8449";
+      if (auth.picture) {
+        avatarEl.src = auth.picture;
+        avatarEl.style.display = "block";
+      }
+      switchBtn.style.display = "inline-block";
+      authGate.style.display = "none";
+      formBody.style.display = "block";
+    } else {
+      emailEl.textContent = "غير مسجل الدخول";
+      statusEl.textContent = "يرجى تسجيل الدخول بحساب Google لإظهار الاستمارة";
+      statusEl.style.color = "#566573";
+      avatarEl.style.display = "none";
+      switchBtn.style.display = "none";
+      authGate.style.display = "block";
+      formBody.style.display = "none";
+    }
+  }
+
+  function handleCredentialResponse(response) {
+    const payload = parseJwt(response.credential);
+    if (payload && payload.email) {
+      localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify({
+        token: response.credential,
+        email: payload.email,
+        name: payload.name || "",
+        picture: payload.picture || "",
+        exp: payload.exp
+      }));
+      updateAuthUI();
+    }
+  }
+
+  function signOutGoogle() {
+    localStorage.removeItem(AUTH_STORAGE_KEY);
+    if (window.google && google.accounts && google.accounts.id) {
+      google.accounts.id.disableAutoSelect();
+    }
+    updateAuthUI();
+  }
+
+  window.onload = function() {
+    updateAuthUI();
+    if (window.google && GOOGLE_CLIENT_ID !== "ضع_GOOGLE_CLIENT_ID_هنا") {
+      google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: handleCredentialResponse
+      });
+      google.accounts.id.renderButton(
+        document.getElementById("googleBtnGate"),
+        { theme: "outline", size: "large", text: "signin_with", locale: "ar" }
+      );
+    } else if (GOOGLE_CLIENT_ID === "ضع_GOOGLE_CLIENT_ID_هنا") {
+      document.getElementById("googleBtnGate").innerHTML = '<div style="padding:12px;background:#fcf3cf;color:#7d6608;border-radius:6px;font-weight:bold;">يرجى وضع GOOGLE_CLIENT_ID داخل الكود لتفعيل زر تسجيل الدخول بحساب Google.</div>';
+    }
+  };
 
   let sheetData = { teachers: {}, subjects: {} };
 
@@ -513,19 +577,11 @@
   const postponedInput = document.getElementById("postponedLectures");
 
   function getSavedProfile() {
-    try {
-      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || null;
-    } catch {
-      return null;
-    }
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || null; } catch { return null; }
   }
-
   function saveTeacherProfile(role, teacher) {
-    if (role && teacher) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ role, teacher }));
-    }
+    if (role && teacher) localStorage.setItem(STORAGE_KEY, JSON.stringify({ role, teacher }));
   }
-
   function populateTeachers(role, preselectedTeacher = "") {
     teacherSelect.innerHTML = '<option value="">-- اختر اسم التدريسي --</option>';
     if (role && sheetData.teachers[role]) {
@@ -546,9 +602,7 @@
   function autoCalcPostponed() {
     const p = parseFloat(plannedInput.value);
     const a = parseFloat(actualInput.value);
-    if (!isNaN(p) && !isNaN(a)) {
-      postponedInput.value = Math.max(0, p - a);
-    }
+    if (!isNaN(p) && !isNaN(a)) postponedInput.value = Math.max(0, p - a);
   }
   plannedInput.addEventListener("input", autoCalcPostponed);
   actualInput.addEventListener("input", autoCalcPostponed);
@@ -566,9 +620,7 @@
         if (saved && saved.role && sheetData.teachers[saved.role]) {
           roleSelect.value = saved.role;
           populateTeachers(saved.role, saved.teacher || "");
-          if (saved.teacher) {
-            autofillNotice.style.display = "flex";
-          }
+          if (saved.teacher) autofillNotice.style.display = "flex";
         }
       })
       .catch(() => {
@@ -582,7 +634,6 @@
     populateTeachers(this.value);
     saveTeacherProfile(this.value, "");
   });
-
   teacherSelect.addEventListener("change", function() {
     saveTeacherProfile(roleSelect.value, this.value);
   });
@@ -591,7 +642,6 @@
     radio.addEventListener("change", function() {
       const stage = this.value;
       subjectSelect.innerHTML = '<option value="">-- اختر المادة الدراسية --</option>';
-
       if (stage && sheetData.subjects[stage] && sheetData.subjects[stage].length > 0) {
         subjectSelect.disabled = false;
         sheetData.subjects[stage].forEach(sub => {
@@ -609,20 +659,29 @@
 
   form.addEventListener("submit", function(e) {
     e.preventDefault();
+    const auth = getValidAuth();
+    if (!auth) {
+      alert("انتهت جلسة تسجيل الدخول بحساب Google. يرجى تسجيل الدخول مجدداً.");
+      updateAuthUI();
+      return;
+    }
+
     submitBtn.disabled = true;
-    submitBtn.textContent = "جاري إرسال الاستمارة...";
+    submitBtn.textContent = "جاري التحقق وإرسال الاستمارة...";
     statusBox.style.display = "none";
 
     const currentRole = roleSelect.value;
     const currentTeacher = teacherSelect.value;
-
     saveTeacherProfile(currentRole, currentTeacher);
 
     const payload = {
+      idToken: auth.token,
       role: currentRole,
       teacher: currentTeacher,
       stage: document.querySelector('input[name="stage"]:checked').value,
+      studyType: document.querySelector('input[name="studyType"]:checked').value,
       subject: subjectSelect.value,
+      subjectType: document.querySelector('input[name="subjectType"]:checked').value,
       plannedLectures: plannedInput.value,
       actualLectures: actualInput.value,
       postponedLectures: postponedInput.value,
@@ -644,7 +703,7 @@
       body: JSON.stringify(payload)
     })
     .then(() => {
-      statusBox.textContent = "تم استلام الاستمارة بنجاح وحفظها في سجل القسم. تم الاحتفاظ باسمك لتعبئة مادة أخرى بسهولة.";
+      statusBox.textContent = "تم استلام الاستمارة وتوثيقها ببريدك (" + auth.email + ") بنجاح.";
       statusBox.className = "status-box status-success";
       statusBox.style.display = "block";
       
